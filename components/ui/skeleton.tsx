@@ -37,7 +37,7 @@ export function SkHeader() {
   return (
     <header className="top" aria-hidden="true">
       <div className="top-l">
-        <Link href="/projects" className="sk-brand"><Logo /><strong>Visão por Dev</strong></Link>
+        <Link href="/projects" className="sk-brand"><Logo /><strong>Farol</strong><span className="muted">Visibilidade Ágil</span></Link>
         <Sk w={170} h={34} r={10} />
       </div>
       <div className="user"><Sk w={30} h={30} circle /><Sk w={90} h={14} /></div>

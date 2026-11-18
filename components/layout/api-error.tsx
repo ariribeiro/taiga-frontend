@@ -7,7 +7,7 @@ import { Header } from "@/components/layout/header";
 /**
  * Tratamento padrão de erros da API nas páginas, para usar no `catch`:
  *  - 401: sessão expirada, volta ao login;
- *  - 403: "Acesso restrito" (a pessoa não tem o papel no projeto);
+ *  - 403: "Projeto indisponível" (fora dos projetos do usuário de serviço);
  *  - 404: mensagem com link para a lista;
  *  - qualquer outro erro é relançado (página de erro do Next).
  */

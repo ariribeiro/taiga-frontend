@@ -12,6 +12,7 @@ import { UnassignedKpi } from "@/components/sprint/unassigned";
 import { taigaWebLink } from "@/lib/utils/links";
 import { Avatar, Bar, Kpi, Ring } from "@/components/ui/primitives";
 import { Picture } from "@/components/ui/picture";
+import { ScrumMaster } from "@/components/projects/scrum-master";
 import { SprintPicker } from "@/components/sprint/sprint-picker";
 import { fmtDate as fmt } from "@/lib/utils/format";
 
@@ -34,7 +35,7 @@ export default async function ProjectPage(props: { params: Promise<{ id: string 
     }
     const { project, sorted, sprint } = data;
     if (!sprint) {
-      return (<><Header name={me.fullName} /><main className="wrap"><h2>{project.name}</h2><p className="muted">Este projeto não tem sprints.</p></main></>);
+      return (<><Header name={me.fullName} /><main className="wrap"><h2>{project.name}</h2><ScrumMaster people={data.scrumMasters} /><p className="muted">Este projeto não tem sprints.</p></main></>);
     }
     const { devs, overview: o, stats, unassigned: un, pace, meta } = data;
     const webLink = (kind: "us" | "task", ref: number) => taigaWebLink(meta.webBase, project.slug, kind, ref);
@@ -51,6 +52,7 @@ export default async function ProjectPage(props: { params: Promise<{ id: string 
             <div className="dev-head"><Picture name={project.name} src={project.logo_small_url} size={44} square /><h2>{project.name}</h2></div>
             <SprintPicker sprints={sorted} current={sprint.id} />
           </div>
+          <ScrumMaster people={data.scrumMasters} />
 
           <section className="card overview">
             <Ring value={o.progress} size={132} stroke={12} label="concluído" />

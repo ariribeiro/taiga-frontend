@@ -35,8 +35,12 @@ export const Kpi = ({ value, label, icon }: { value: ReactNode; label: string; i
   <div className="kpi"><span className="kpi-ico">{icon}</span><div><b>{value}</b><span>{label}</span></div></div>
 );
 
-export const Logo = () => (
-  <span className="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" /></svg></span>
+/** Ícone do Farol (o farol). O nome vai ao lado, como texto, para acompanhar o tema claro/escuro. */
+export const Logo = () => <img className="logo" src="/farol-icon.png" alt="" width={46} height={26} />;
+
+/** Logo completo (farol + "Farol · Visibilidade Ágil"). Usado na tela de entrada. */
+export const LogoFull = () => (
+  <span className="logo-full"><img src="/farol-logo.png" alt="Farol — Visibilidade Ágil" width={300} height={82} /></span>
 );
 
 /** Link “↗” para abrir a story/task no Taiga (não aparece se TAIGA_WEB_URL não estiver configurada). */

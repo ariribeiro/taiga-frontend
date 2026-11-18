@@ -18,6 +18,8 @@ ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=8080 HOSTNAME=0.0.0.0
 WORKDIR /app
 COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
+# o modo standalone não copia a pasta public (logo e ícone do Farol)
+COPY --from=build /app/public ./public
 # OpenShift (SCC "restricted") roda o contêiner com um UID aleatório e GID 0: o grupo 0 precisa ter o mesmo acesso do dono.
 RUN mkdir -p .next/cache && chgrp -R 0 /app && chmod -R g=u /app
 USER 1001

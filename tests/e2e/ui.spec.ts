@@ -2,12 +2,12 @@ import { expect, test } from "@playwright/test";
 import { loginOk, unique } from "./helpers";
 
 test.describe("projetos", () => {
-  test("acesso: projeto em que o usuário não é Servidor Dirti/Fiscal fica bloqueado", async ({ page }) => {
+  test("acesso: projeto de que o usuário de serviço não é membro fica bloqueado", async ({ page }) => {
     await loginOk(page, unique("u"));
     await page.goto("/projects/77");
-    await expect(page.getByRole("heading", { name: "Acesso restrito" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Projeto indisponível" })).toBeVisible();
     await page.goto("/projects/1");
-    await expect(page.getByRole("heading", { name: "Acesso restrito" })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Projeto indisponível" })).toHaveCount(0);
   });
 
   test("favoritos: marcar sobe o projeto para o topo e persiste ao recarregar", async ({ page }) => {
@@ -63,6 +63,15 @@ test.describe("sprint (Scrum)", () => {
     await page.locator(".fold > summary").click();                         // recolher o burndown
     await expect(page.locator("svg.bd")).toBeHidden();
     await expect(page.locator(".fold > summary")).toContainText("Restam");
+  });
+
+  test("mostra o Scrum Master do projeto (nome e foto/iniciais), só o ativo", async ({ page }) => {
+    const sm = page.locator(".sm");
+    await expect(sm).toContainText("Scrum Master");
+    await expect(sm).toContainText("Marina Alves");
+    await expect(sm).not.toContainText("Sam Inativo");                       // conta desativada
+    await expect(sm.locator(".avatar, img.pic")).toHaveCount(1);
+    await expect(page.locator(".devcard", { hasText: "Marina Alves" })).toHaveCount(0);   // não vira card de dev
   });
 
   test("cards só dos papéis permitidos; quem tem impedimento é destacado", async ({ page }) => {
@@ -156,6 +165,10 @@ test.describe("Kanban", () => {
     await expect(col("ARQUIVADO")).toContainText("0");
     await expect(col("EM ANDAMENTO")).toHaveClass(/over/);                  // 4 itens, limite de WIP 3
     await expect(col("EM ANDAMENTO")).toContainText("limite 3");
+  });
+
+  test("mostra o Scrum Master também na visão de fluxo", async ({ page }) => {
+    await expect(page.locator(".sm")).toContainText("Marina Alves");
   });
 
   test("indicadores, vazão semanal e listas", async ({ page }) => {

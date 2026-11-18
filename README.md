@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="docs/logo.svg" width="88" alt="Logotipo" />
+<img src="docs/farol-logo.png" width="320" alt="Farol — Visibilidade Ágil" />
 
-# Taiga · Visão por Dev
+# Farol · Visibilidade Ágil
 
 **O que o Taiga não mostra: o andamento de cada pessoa do time, sprint a sprint — e o fluxo dos projetos Kanban.**
 
@@ -32,7 +32,7 @@
 
 O Taiga é ótimo para organizar o trabalho, mas responder perguntas como *"quem está com o quê?"*, *"quem está impedido?"* ou *"essa sprint vai fechar no prazo?"* exige abrir quadro por quadro. Este projeto lê a API do Taiga (por meio da API própria, repositório `taiga-dev-view-back`) e monta essas visões — **sem alterar nada no Taiga**.
 
-Cada pessoa entra com o **próprio login do Taiga** e só enxerga os projetos em que tem o papel **Servidor Dirti/Fiscal**. Os dados são consultados por um **usuário de serviço** (veja a [API](#-arquitetura)).
+Cada pessoa entra com o **próprio login do Taiga** e enxerga os projetos de que o **usuário de serviço** é membro (não há filtro por perfil). Os dados são consultados por um **usuário de serviço** (veja a [API](#-arquitetura)).
 
 ## 🧭 Funcionalidades
 
@@ -113,7 +113,7 @@ flowchart LR
 
 - O navegador só fala com o **front** (única `Route`). A API fica **dentro do cluster**, protegida por `NetworkPolicy` e por uma chave interna (`API_KEY`).
 - **Login:** o front repassa usuário e senha à API, que confere no Taiga e **descarta o token** da pessoa; fica só uma sessão opaca, guardada no cookie `HttpOnly` (`Secure` e `__Host-` em produção).
-- **Permissões:** a API confere o papel **Servidor Dirti/Fiscal** da pessoa em cada projeto. Como o usuário de serviço enxerga mais do que ela, essa regra é verificada em toda rota.
+- **Permissões:** não há filtro por perfil. O que aparece é o que o usuário de serviço enxerga: a API só aceita projetos de que ele é membro, e essa regra é verificada em toda rota.
 - O front mantém uma **cópia dos tipos** do contrato em `lib/api/types.ts`; ao mudar a API, atualize os dois lados (veja `docs/API.md` no repositório do back).
 
 ## 🚀 Começando

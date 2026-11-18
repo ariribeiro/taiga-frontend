@@ -14,7 +14,7 @@ export async function GET(req: Request) {
     if (res.ok) return NextResponse.json(await res.json());
     const code = ((await res.json().catch(() => ({}))) as { error?: string }).error;
     const status = [400, 401, 403, 404].includes(res.status) ? res.status : 502;
-    const msg: Record<number, string> = { 400: "Parâmetros inválidos", 401: "Sem sessão", 403: "Acesso restrito", 404: "Não encontrado", 502: "Falha ao consultar o Taiga" };
+    const msg: Record<number, string> = { 400: "Parâmetros inválidos", 401: "Sem sessão", 403: "Projeto indisponível", 404: "Não encontrado", 502: "Falha ao consultar o Taiga" };
     return NextResponse.json({ error: msg[status], code }, { status });
   } catch (e) {
     if (e instanceof ApiError) return NextResponse.json({ error: "Falha ao consultar o Taiga" }, { status: 502 });

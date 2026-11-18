@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getMe } from "@/lib/api/client";
-import { Logo } from "@/components/ui/primitives";
+import { LogoFull } from "@/components/ui/primitives";
 
 const MSG: Record<string, string> = {
   "1": "Informe usuário e senha.",
@@ -21,7 +21,7 @@ export default async function Home(props: { searchParams: Promise<{ erro?: strin
   return (
     <main className="login-page">
       <section className="hero">
-        <Logo />
+        <LogoFull />
         <h1>Enxergue o seu time,<br />sprint a sprint.</h1>
         <p>Progresso por desenvolvedor, visão geral da sprint e o que cada pessoa está fazendo — direto do seu Taiga.</p>
         <ul>

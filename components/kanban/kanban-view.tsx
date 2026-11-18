@@ -1,3 +1,4 @@
+import { ScrumMaster } from "@/components/projects/scrum-master";
 import Link from "next/link";
 import type { KanbanResponse, KDev, KItem } from "@/lib/api/types";
 import { taigaWebLink } from "@/lib/utils/links";
@@ -60,6 +61,7 @@ export function KanbanView({ data, pid, userName }: { data: KanbanResponse; pid:
           <div className="dev-head"><Picture name={project.name} src={project.logo_small_url} size={44} square /><h2>{project.name}</h2><span className="badge b-closed">Kanban</span><KanbanHelp info={{ days, staleDays: STALE_DAYS, blockedPattern: meta.blockedPattern, roles: meta.roles, doneTotal: data.doneTotal, fetched: data.fetched, ordered: data.ordered, partial: data.partial }} /></div>
           <PeriodPicker current={days} />
         </div>
+        <ScrumMaster people={data.scrumMasters} />
 
         <section className="card">
           <h4 className="sec">Quadro</h4>

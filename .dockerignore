@@ -9,3 +9,4 @@ deploy
 test-results
 playwright-report
 *.md
+.claude

@@ -46,14 +46,16 @@ export type SprintOverview = {
   byStatus: { name: string; color: string; count: number }[];
   unassignedStories: number; unassignedTasks: number;
 };
+/** Pessoa do time (nome e foto, que pode faltar). */
+export type Person = { name: string; photo: string | null };
 export type Pace = { state: "closed" | "ahead" | "late" | "ok"; diff: number };
 
 export type SprintResponse =
   | { kind: "kanban"; project: TProject }
-  | { kind: "scrum"; project: TProject; sorted: TMilestone[]; sprint: null; meta: Meta }
+  | { kind: "scrum"; project: TProject; sorted: TMilestone[]; sprint: null; scrumMasters: Person[]; meta: Meta }
   | {
       kind: "scrum"; project: TProject; sorted: TMilestone[]; sprint: TMilestone;
-      devs: DevView[]; overview: SprintOverview; unassigned: Unassigned; stats: TMilestoneStats | null; pace: Pace; meta: Meta;
+      scrumMasters: Person[]; devs: DevView[]; overview: SprintOverview; unassigned: Unassigned; stats: TMilestoneStats | null; pace: Pace; meta: Meta;
     };
 
 // ---- Kanban ----
@@ -74,7 +76,7 @@ export type KanbanMetrics = {
 };
 export type KanbanResponse = {
   project: TProject; days: number; board: KStatus[];
-  doneTotal: number; fetched: number; ordered: boolean; partial: boolean;
+  doneTotal: number; fetched: number; ordered: boolean; partial: boolean; scrumMasters: Person[];
   metrics: KanbanMetrics; meta: Meta;
 };
 export type ItemDetail = {

@@ -32,7 +32,7 @@ export function ProjectList({ projects, userId }: { projects: P[]; userId: numbe
     rest: projects.filter((p) => !favs.includes(p.id)),
   }), [projects, favs]);
 
-  if (!projects.length) return <p className="muted">Você não tem o papel “Servidor Dirti/Fiscal” em nenhum projeto.</p>;
+  if (!projects.length) return <p className="muted">Nenhum projeto disponível no painel.</p>;
   return (
     // escondido até ler os favoritos, para a lista não "pular" de ordem na tela
     <div className={`pl${ready ? " ready" : ""}`}>

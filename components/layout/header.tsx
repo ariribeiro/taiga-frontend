@@ -10,7 +10,7 @@ export async function Header({ name }: { name: string }) {
   return (
     <header className="top">
       <div className="top-l">
-        <Link href="/projects" className="brand"><Logo /><strong>Visão por Dev</strong></Link>
+        <Link href="/projects" className="brand"><Logo /><strong>Farol</strong><span className="muted">Visibilidade Ágil</span></Link>
         {projects.length > 0 && <ProjectSwitcher userId={me!.userId} projects={projects.map((p) => ({ id: p.id, name: p.name, logo: p.logo_small_url ?? null }))} />}
       </div>
       <form method="post" action="/api/logout" className="user">
