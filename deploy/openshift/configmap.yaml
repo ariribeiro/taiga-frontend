@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: taiga-dev-view-front
+  labels: { app: taiga-dev-view-front }
+data:
+  API_URL: "http://taiga-dev-view-back:8080"   # Service do back, no mesmo namespace
+  TRUSTED_PROXY_HOPS: "1"                      # só o roteador do OpenShift; some mais se houver outro balanceador na frente

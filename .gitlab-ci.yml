@@ -1,0 +1,64 @@
+stages: [test, build]
+
+default:
+  interruptible: true
+
+variables:
+  # Repositório da API, usado pelos testes de ponta a ponta (o front é testado junto com ela).
+  BACK_REPO: "$CI_SERVER_HOST/$CI_PROJECT_NAMESPACE/taiga-dev-view-back.git"
+
+.node: &node
+  image: node:22
+  cache:
+    key: { files: [package-lock.json] }
+    paths: [.npm/]
+  before_script:
+    - npm ci --cache .npm --prefer-offline --no-audit --no-fund
+
+testes:
+  <<: *node
+  stage: test
+  script:
+    - npm run typecheck
+    - npm run test:unit
+    - npm run build
+
+# Sobe a pilha inteira (Taiga simulado + API + front) num navegador real.
+# O job precisa ler o repositório da API: em Settings > CI/CD > Job token permissions do projeto do back, libere este projeto.
+e2e:
+  <<: *node
+  stage: test
+  # imagem com os navegadores já instalados (a versão deve acompanhar o @playwright/test do package.json)
+  image: mcr.microsoft.com/playwright:v1.65.1-noble
+  variables:
+    BACK_DIR: "$CI_PROJECT_DIR/../taiga-dev-view-back"
+    CI: "1"
+  script:
+    - git clone --depth 1 "https://gitlab-ci-token:${CI_JOB_TOKEN}@${BACK_REPO}" "$BACK_DIR"
+    - (cd "$BACK_DIR" && npm ci --no-audit --no-fund)
+    - npm run e2e -- --trace off
+  artifacts:
+    when: on_failure
+    paths: [playwright-report/]
+    expire_in: 7 days
+
+auditoria:
+  <<: *node
+  stage: test
+  script:
+    - npm audit --omit=dev --audit-level=high
+
+# Gera a imagem sem precisar de Docker no runner (Kaniko) e publica no registro do GitLab.
+# Para outro registro (ex.: o interno do OpenShift), ajuste --destination e as credenciais.
+imagem:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(printf '%s:%s' "$CI_REGISTRY_USER" "$CI_REGISTRY_PASSWORD" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile Dockerfile --destination "$CI_REGISTRY_IMAGE:${CI_COMMIT_TAG:-$CI_COMMIT_SHORT_SHA}" --destination "$CI_REGISTRY_IMAGE:latest"

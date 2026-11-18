@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taiga-dev-view-front
+  labels: { app: taiga-dev-view-front }
+spec:
+  replicas: 2   # sem estado: as sessões ficam na API
+  selector:
+    matchLabels: { app: taiga-dev-view-front }
+  template:
+    metadata:
+      labels: { app: taiga-dev-view-front }
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: front
+          image: registry.suaempresa.com/taiga/taiga-dev-view-front:latest   # ajuste (imagem gerada pelo pipeline)
+          ports:
+            - { name: http, containerPort: 8080 }
+          envFrom:
+            - configMapRef: { name: taiga-dev-view-front }
+            - secretRef: { name: taiga-dev-view-front }
+          readinessProbe:
+            httpGet: { path: /healthz, port: http }
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            requests: { cpu: 100m, memory: 192Mi }
+            limits: { cpu: "1", memory: 512Mi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          volumeMounts:
+            - { name: cache, mountPath: /app/.next/cache }
+            - { name: tmp, mountPath: /tmp }
+      volumes:
+        - { name: cache, emptyDir: {} }
+        - { name: tmp, emptyDir: {} }

@@ -1,0 +1,15 @@
+# Única porta de entrada pública do sistema. O app só funciona em HTTPS (cookie Secure com prefixo __Host-).
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: taiga-dev-view
+  labels: { app: taiga-dev-view-front }
+  annotations:
+    haproxy.router.openshift.io/timeout: 60s
+spec:
+  host: dev-view.apps.suaempresa.com   # ajuste
+  to: { kind: Service, name: taiga-dev-view-front }
+  port: { targetPort: http }
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
